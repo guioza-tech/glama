@@ -52,7 +52,7 @@ final class Process
 
     public static function isRunningOnBG(string $processName)
     {
-        $runners =  Process::run(["ps", "aux"])->raw();
+        $runners =  Process::run(["/usr/bin/ps", "aux"])->raw();
         return strpos($runners, $processName);
     }
 

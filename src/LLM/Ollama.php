@@ -9,10 +9,13 @@ class Ollama implements LLMProviderContract
     private string $prompt = '';
     private array $options = [];
 
-    public function __construct(private readonly string $model = 'deepseek-r1')
+    public function __construct(private readonly string $model = 'deepseek-r1:8b')
     {
     }
 
+    /**
+     * @return
+     */
     public function needsServer(): bool
     {
         return true;
