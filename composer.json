@@ -5,8 +5,9 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Guioza\\Glama\\": "src/"
-        }
+            "Guioza\\Glama\\": "src/",
+        },
+        "files": [ "src/helpers.php", ]
     },
     "authors": [
         {
@@ -22,5 +23,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "require": {
+        "symfony/process": "^7.2"
     }
 }
