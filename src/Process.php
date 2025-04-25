@@ -36,7 +36,7 @@ final class Process
     /**
      * @return string
      */
-    public function raw():string
+    public function raw(): string
     {
         return $this->process->getOutput();
     }
@@ -44,7 +44,7 @@ final class Process
     /**
      * @return string
      */
-    public function cleanerLLM():string
+    public function cleanerLLM(): string
     {
         $out = $this->process->getOutput();
         return str_replace(["<think>", "</think>"], "", trim($out));
@@ -56,6 +56,40 @@ final class Process
         return strpos($runners, $processName);
     }
 
+    /**
+     * Get serialized array of running Ollama processes
+     *
+     * @return array<int, array<string, string|int>> Array of process information
+     */
+    public static function getOllamaProcesses(): array
+    {
+        $output = self::run(["ollama", "ps"])->raw();
 
+        $lines = array_filter(explode("\n", trim($output)));
 
+        $headers = preg_split('/\s+/', trim($lines[0]));
+
+        $result = [];
+
+        for ($i = 1; $i < count($lines); $i++) {
+            $line = trim($lines[$i]);
+
+            preg_match('/(\S+)\s+(\S+)\s+(\S+\s\S+)\s+(\d+%\s\S+)\s+(.+)/', $line, $matches);
+
+            if (count($matches) >= 6) {
+                $item = [
+                $headers[0] => $matches[1],        // NAME
+                $headers[1] => $matches[2],        // ID
+                $headers[2] => $matches[3],        // SIZE
+                $headers[3] => $matches[4],        // PROCESSOR
+                $headers[4] => $matches[5],        // UNTIL
+                ];
+
+                $result[] = $item;
+            }
+        }
+
+        return $result;
+
+    }
 }

@@ -1,21 +1,20 @@
 <?php
+
 namespace Glama\LLM;
 
 use Glama\Contracts\LLMProviderContract;
 use Glama\Process;
+use Illuminate\Support\Facades\Http;
 
 class Ollama implements LLMProviderContract
 {
     private string $prompt = '';
     private array $options = [];
 
-    public function __construct(private readonly string $model = 'deepseek-r1:8b')
+    public function __construct(private readonly string $model = 'llama3.2')
     {
     }
 
-    /**
-     * @return
-     */
     public function needsServer(): bool
     {
         return true;
@@ -59,7 +58,7 @@ class Ollama implements LLMProviderContract
     }
 
     /**
-     * Execute the prompt against Ollama using the command line and get the response
+     * Execute the prompt against Ollama using the HTTP API and get the response
      *
      * @return array|string
      */
@@ -67,33 +66,22 @@ class Ollama implements LLMProviderContract
     {
         $this->openServer();
 
-        $escapedPrompt = escapeshellarg($this->prompt);
-
-        $commandStr = "ollama run {$this->model} {$escapedPrompt}";
-
-        if (!empty($this->options)) {
-            if (isset($this->options['temperature'])) {
-                $commandStr .= " --temperature " . floatval($this->options['temperature']);
-            }
-        }
-
         try {
-            $process = Process::run(["sh", "-c", $commandStr]);
-            $output = trim($process->cleanerLLM());
+            $result = Http::timeout(100000)->post(
+                'localhost:11434/api/generate',
+                [
+                'model' => $this->model,
+                'prompt' => $this->prompt,
+                'stream' => false,
+                'temperature' => isset($this->options['temperature']) ? floatval($this->options['temperature']) : null,
+                ]
+            )->json();
 
-            if (!empty($this->options['full_response'])) {
-                return [
-                    'model' => $this->model,
-                    'prompt' => $this->prompt,
-                    'response' => $output,
-                    'raw' => $process->raw()
-                ];
-            }
-
-            return $output;
+            $response = $result['response'] ?? '';
+            return str_replace(["<think>", "</think>", PHP_EOL], "", trim($response));
         } catch (\Exception $e) {
-            throw new \RuntimeException("Failed to execute Ollama command: " . $e->getMessage());
+            return ['error' => $e->getMessage()];
         }
     }
-}
 
+}

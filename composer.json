@@ -1,13 +1,17 @@
 {
     "name": "guioza/glama",
-    "description": "NLM library",
+    "description": "Guioza Smart Reader Laravel LLM library",
+    "version": "0.0.1",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Guioza\\Glama\\": "src/",
+            "Glama\\": "src/"
         },
-        "files": [ "src/helpers.php", ]
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "authors": [
         {
@@ -15,7 +19,6 @@
             "email": "pedro@guioza.com"
         }
     ],
-    "minimum-stability": "stable",
     "require-dev": {
         "pestphp/pest": "^3.8"
     },
@@ -25,6 +28,12 @@
         }
     },
     "require": {
+        "illuminate/support": "12.*",
         "symfony/process": "^7.2"
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true
     }
 }
