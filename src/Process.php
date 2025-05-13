@@ -5,54 +5,44 @@ namespace Glama;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
-
 /**
  * Process
  */
 final class Process
 {
+    public function __construct(private readonly SymfonyProcess $process) {}
 
     /**
-     * @param SymfonyProcess $process
-     */
-    public function __construct(private readonly SymfonyProcess $process)
-    {
-    }
-    /**
-     * @param array<string> $commands
+     * @param  array<string>  $commands
      */
     public static function run(array $commands)
     {
         $process = new SymfonyProcess($commands);
         $process->run();
 
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
 
         return new Process($process);
     }
 
-    /**
-     * @return string
-     */
     public function raw(): string
     {
         return $this->process->getOutput();
     }
 
-    /**
-     * @return string
-     */
     public function cleanerLLM(): string
     {
         $out = $this->process->getOutput();
-        return str_replace(["<think>", "</think>"], "", trim($out));
+
+        return str_replace(['<think>', '</think>'], '', trim($out));
     }
 
     public static function isRunningOnBG(string $processName)
     {
-        $runners =  Process::run(["/usr/bin/ps", "aux"])->raw();
+        $runners = Process::run(['/usr/bin/ps', 'aux'])->raw();
+
         return strpos($runners, $processName);
     }
 
@@ -63,7 +53,7 @@ final class Process
      */
     public static function getOllamaProcesses(): array
     {
-        $output = self::run(["ollama", "ps"])->raw();
+        $output = self::run(['ollama', 'ps'])->raw();
 
         $lines = array_filter(explode("\n", trim($output)));
 
@@ -78,11 +68,11 @@ final class Process
 
             if (count($matches) >= 6) {
                 $item = [
-                $headers[0] => $matches[1],        // NAME
-                $headers[1] => $matches[2],        // ID
-                $headers[2] => $matches[3],        // SIZE
-                $headers[3] => $matches[4],        // PROCESSOR
-                $headers[4] => $matches[5],        // UNTIL
+                    $headers[0] => $matches[1],        // NAME
+                    $headers[1] => $matches[2],        // ID
+                    $headers[2] => $matches[3],        // SIZE
+                    $headers[3] => $matches[4],        // PROCESSOR
+                    $headers[4] => $matches[5],        // UNTIL
                 ];
 
                 $result[] = $item;

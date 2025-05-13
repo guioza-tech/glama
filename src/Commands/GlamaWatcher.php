@@ -13,20 +13,22 @@ class GlamaWatcher extends Command
      * @var string
      */
     protected $signature = 'glama:provider-watch';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Glama Watch process and logs it';
+
     public function handle()
     {
-        $this->info("Ollama Watching...");
-        while(true) {
+        $this->info('Ollama Watching...');
+        while (true) {
             $processes = Process::getOllamaProcesses();
-            if(!empty($processes)) {
-                $this->output->write(chr(27)."[2J".chr(27)."[H");
-                $this->info("Last updated: " . date('Y-m-d H:i:s'));
+            if (! empty($processes)) {
+                $this->output->write(chr(27).'[2J'.chr(27).'[H');
+                $this->info('Last updated: '.date('Y-m-d H:i:s'));
                 $this->table(
                     ['NAME', 'ID', 'SIZE', 'PROCESSOR', 'UNTIL'],
                     array_map(
@@ -36,14 +38,14 @@ class GlamaWatcher extends Command
                                 $process['ID'],
                                 $process['SIZE'],
                                 $process['PROCESSOR'],
-                                $process['UNTIL']
+                                $process['UNTIL'],
                             ];
                         }, $processes
                     )
                 );
                 sleep(5);
             } else {
-                $this->info("No Ollama processes running. Checking again in 5 seconds...");
+                $this->info('No Ollama processes running. Checking again in 5 seconds...');
                 sleep(5);
             }
         }

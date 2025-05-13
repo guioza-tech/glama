@@ -10,9 +10,7 @@ class GlamaServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap services.
@@ -22,14 +20,14 @@ class GlamaServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(
                 [
-                GlamaWatcher::class,
+                    GlamaWatcher::class,
                 ]
             );
         }
 
         $this->publishes(
             [
-            __DIR__.'/config/glama.php' => config_path('glama.php'),
+                __DIR__.'/config/glama.php' => config_path('glama.php'),
             ], 'config'
         );
 

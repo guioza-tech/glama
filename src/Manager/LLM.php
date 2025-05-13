@@ -2,7 +2,4 @@
 
 namespace Glama\Manager;
 
-class LLM
-{
-
-}
+class LLM {}

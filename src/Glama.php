@@ -8,7 +8,6 @@ use Glama\Providers\LLMProvider;
 
 class Glama
 {
-
     /**
      * TODO: Improve the extensibility
      *
@@ -16,7 +15,6 @@ class Glama
      */
     public function provider(): LLMProviderContract
     {
-        return new Ollama();
+        return new Ollama;
     }
-
 }
