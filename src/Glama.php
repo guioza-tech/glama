@@ -3,6 +3,7 @@
 namespace Glama;
 
 use Glama\Contracts\LLMProviderContract;
+use Glama\LLM\DeepSeek;
 use Glama\LLM\Ollama;
 use Glama\Providers\LLMProvider;
 
@@ -13,8 +14,11 @@ class Glama
      *
      * @return LLMProvider
      */
-    public function provider(): LLMProviderContract
+    public function provider(): LLMProviderContract|DeepSeek
     {
+        if(config('glama.default_provider') === 'deepseek') {
+            return new DeepSeek();
+        }
         return new Ollama;
     }
 }

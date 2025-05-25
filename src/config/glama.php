@@ -9,7 +9,7 @@ return [
     | This option controls the default LLM provider that will be used.
     |
     */
-    'default_provider' => env('GLAMA_DEFAULT_PROVIDER', 'ollama'),
+    'default_provider' => env('GLAMA_DEFAULT_PROVIDER', 'deepseek'),
 
     /*
     |--------------------------------------------------------------------------
@@ -24,5 +24,11 @@ return [
             'model' => env('OLLAMA_DEFAULT_MODEL', 'llama3.2'),
             'host' => env('OLLAMA_HOST', 'http://localhost:11434'),
         ],
+        'deepseek' =>[
+            'host' => 'https://api.deepseek.com',
+            'key'=> env('DEEPSEEK_KEY'),
+            'model' => env('DEEPSEEK_MODEL', 'deepseek-reasoner')
+
+        ]
     ],
 ];
